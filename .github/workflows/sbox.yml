@@ -1,4 +1,4 @@
-name: Publish Docker Images
+name: Publish Docker Images Sbox
 
 on:
   release:
@@ -10,8 +10,8 @@ on:
         description: "The tag version you want to build"
 
 env:
-  REGISTRY_IMAGE: ghcr.io/sagernet/sing-box
-
+  REGISTRY_IMAGE: ghcr.io/0xhx/sbox
+ 
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -46,6 +46,13 @@ jobs:
       - name: Prepare
         run: |
           platform=${{ matrix.platform }}
+          ## 替换 sagernet/sing-box 为 0xho/sbox , sing-box 为 sbox 
+          sed -i "s/sagernet\/sing-box/0xho\/sbox/g" Dockerfile
+          sed -i "s/sing-box/sbox/g" Dockerfile
+          # 添加 with_embedded_tor 功能,替换 tfogo_checklinkname0 为 tfogo_checklinkname0,with_embedded_tor
+          sed -i "s/tfogo_checklinkname0/tfogo_checklinkname0,with_embedded_tor/g" Dockerfile
+          # 修改cmd目录下代码目录名称
+          mv cmd/sing-box cmd/sbox
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
