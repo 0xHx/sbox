@@ -100,7 +100,8 @@ jobs:
           outputs: type=image,name=${{ env.REGISTRY_IMAGE_ALI }},push-by-digest=true,name-canonical=true,push=true
       - name: Export digest
         run: |
-          mkdir -p /tmp/digests
+          mkdir -p /tmp/digests/ghcr
+          mkdir -p /tmp/digests/ali
           digest="${{ steps.build.outputs.digest }}"
           touch "/tmp/digests/ghcr/${digest#sha256:}"
           digestali="${{ steps.buildali.outputs.digest }}"
