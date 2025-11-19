@@ -152,7 +152,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: registry.cn-hangzhou.aliyuncs.com
-          username: ${{ secrets.DOCKER_ALI_USE0R }}
+          username: ${{ secrets.DOCKER_ALI_USER }}
           password: ${{ secrets.DOCKER_ALI_PASS }}
       - name: Create manifest list and push
         working-directory: /tmp/digests
