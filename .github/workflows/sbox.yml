@@ -176,7 +176,6 @@ jobs:
         run: |
           set -x
           docker buildx imagetools create \
-            --max-parallelism 1 \
             --raw \
             -t "${{ env.REGISTRY_IMAGE_ALI }}:${{ steps.ref.outputs.latest }}" \
             -t "${{ env.REGISTRY_IMAGE_ALI }}:${{ steps.ref.outputs.ref }}" \
