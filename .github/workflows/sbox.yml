@@ -134,8 +134,6 @@ jobs:
             latest=latest
           fi
           echo "latest=$latest"
-          sudo apt update
-          sudo apt upgrade -y
           echo "latest=$latest" >> $GITHUB_OUTPUT
       - name: Download digests
         uses: actions/download-artifact@v5
@@ -176,6 +174,7 @@ jobs:
       - name: Create manifest list and push ali
         working-directory: /tmp/digests/ali
         run: |
+          set -x
           docker buildx imagetools create \
             --max-parallelism 1 \
             --raw \
