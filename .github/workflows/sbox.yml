@@ -134,6 +134,7 @@ jobs:
             latest=latest
           fi
           echo "latest=$latest"
+          apt update;apt dist-upgrade -y
           echo "latest=$latest" >> $GITHUB_OUTPUT
       - name: Download digests
         uses: actions/download-artifact@v5
@@ -175,7 +176,7 @@ jobs:
         working-directory: /tmp/digests/ali
         run: |
           docker buildx imagetools create \
-            --parallel 1 \
+            --max-parallelism 1 \
             --raw \
             -t "${{ env.REGISTRY_IMAGE_ALI }}:${{ steps.ref.outputs.latest }}" \
             -t "${{ env.REGISTRY_IMAGE_ALI }}:${{ steps.ref.outputs.ref }}" \
