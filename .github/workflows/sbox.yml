@@ -102,9 +102,9 @@ jobs:
         run: |
           mkdir -p /tmp/digests
           digest="${{ steps.build.outputs.digest }}"
-          touch "/tmp/digests/${digest#sha256:}"
+          touch "/tmp/digests/ghcr/${digest#sha256:}"
           digestali="${{ steps.buildali.outputs.digest }}"
-          touch "/tmp/digests/${digestali#sha256:}"
+          touch "/tmp/digests/ali/${digestali#sha256:}"
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
@@ -154,13 +154,16 @@ jobs:
           registry: registry.cn-hangzhou.aliyuncs.com
           username: ${{ secrets.DOCKER_ALI_USER }}
           password: ${{ secrets.DOCKER_ALI_PASS }}
-      - name: Create manifest list and push
-        working-directory: /tmp/digests
+      - name: Create manifest list and push ghcr
+        working-directory: /tmp/digests/ghcr
         run: |
           docker buildx imagetools create \
             -t "${{ env.REGISTRY_IMAGE }}:${{ steps.ref.outputs.latest }}" \
             -t "${{ env.REGISTRY_IMAGE }}:${{ steps.ref.outputs.ref }}" \
             $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
+      - name: Create manifest list and push ali
+        working-directory: /tmp/digests/ali
+        run: |
           docker buildx imagetools create \
             -t "${{ env.REGISTRY_IMAGE_ALI }}:${{ steps.ref.outputs.latest }}" \
             -t "${{ env.REGISTRY_IMAGE_ALI }}:${{ steps.ref.outputs.ref }}" \
