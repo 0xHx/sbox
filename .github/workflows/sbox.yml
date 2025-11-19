@@ -134,7 +134,7 @@ jobs:
             latest=latest
           fi
           echo "latest=$latest"
-          apt update;apt dist-upgrade -y
+          sudo apt update;apt dist-upgrade -y
           echo "latest=$latest" >> $GITHUB_OUTPUT
       - name: Download digests
         uses: actions/download-artifact@v5
