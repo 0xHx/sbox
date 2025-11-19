@@ -10,7 +10,7 @@ on:
         description: "The tag version you want to build"
 
 env:
-  REGISTRY_IMAGE: ghcr.io/0xho/sbox
+  REGISTRY_IMAGE: ghcr.io/0xhx/sbox
   REGISTRY_IMAGE_ALI: registry.cn-hangzhou.aliyuncs.com/dockerflys/sbox
  
 jobs:
