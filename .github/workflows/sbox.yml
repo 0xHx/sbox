@@ -174,17 +174,12 @@ jobs:
       - name: Create manifest list and push ali
         working-directory: /tmp/digests/ali
         run: |
-          # set -x
-          
-          for digest in *; do
-            image="${{ env.REGISTRY_IMAGE_ALI }}@sha256:$digest"
-            echo "Pulling $image (cache for later use)..."
-            # 延长拉取间隔，避免密集请求（每拉一个休眠 3 秒）
-            docker pull $image || true
-            sleep 1
-          done
+          # set -x 
           docker buildx imagetools create \
             -t "${{ env.REGISTRY_IMAGE_ALI }}:${{ steps.ref.outputs.latest }}" \
+            $(printf '${{ env.REGISTRY_IMAGE_ALI }}@sha256:%s ' *)
+          sleep 1
+          docker buildx imagetools create \
             -t "${{ env.REGISTRY_IMAGE_ALI }}:${{ steps.ref.outputs.ref }}" \
             $(printf '${{ env.REGISTRY_IMAGE_ALI }}@sha256:%s ' *)
 
@@ -192,5 +187,4 @@ jobs:
       - name: Inspect image ali
         run: |
           docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE_ALI }}:${{ steps.ref.outputs.latest }}
-          sleep 1
           docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE_ALI }}:${{ steps.ref.outputs.ref }}
