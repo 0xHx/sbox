@@ -141,7 +141,8 @@ jobs:
           path: /tmp/digests
           pattern: digests-*
           merge-multiple: true
-      - name: Set up Docker Buildx
+
+      - name: Set up Docker Buildx ghcr
         uses: docker/setup-buildx-action@v3
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -149,12 +150,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Login to ali Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: registry.cn-hangzhou.aliyuncs.com
-          username: ${{ secrets.DOCKER_ALI_USER }}
-          password: ${{ secrets.DOCKER_ALI_PASS }}
+
       - name: Create manifest list and push ghcr
         working-directory: /tmp/digests/ghcr
         run: |
@@ -162,6 +158,19 @@ jobs:
             -t "${{ env.REGISTRY_IMAGE }}:${{ steps.ref.outputs.latest }}" \
             -t "${{ env.REGISTRY_IMAGE }}:${{ steps.ref.outputs.ref }}" \
             $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
+
+      - name: Inspect image ghcr
+        run: |
+          docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ steps.ref.outputs.latest }}
+          docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ steps.ref.outputs.ref }}
+
+      - name: Login to Container Registry ali
+        uses: docker/login-action@v3
+        with:
+          registry: registry.cn-hangzhou.aliyuncs.com
+          username: ${{ secrets.DOCKER_ALI_USER }}
+          password: ${{ secrets.DOCKER_ALI_PASS }}
+
       - name: Create manifest list and push ali
         working-directory: /tmp/digests/ali
         run: |
@@ -169,9 +178,8 @@ jobs:
             -t "${{ env.REGISTRY_IMAGE_ALI }}:${{ steps.ref.outputs.latest }}" \
             -t "${{ env.REGISTRY_IMAGE_ALI }}:${{ steps.ref.outputs.ref }}" \
             $(printf '${{ env.REGISTRY_IMAGE_ALI }}@sha256:%s ' *)
-      - name: Inspect image
+
+      - name: Inspect image ali
         run: |
-          docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ steps.ref.outputs.latest }}
-          docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ steps.ref.outputs.ref }}
           docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE_ALI }}:${{ steps.ref.outputs.latest }}
           docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE_ALI }}:${{ steps.ref.outputs.ref }}
