@@ -89,7 +89,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
       - name: Build and push ali by digest
-        id: build
+        id: buildali
         uses: docker/build-push-action@v6
         with:
           platforms: ${{ matrix.platform }}
@@ -103,6 +103,8 @@ jobs:
           mkdir -p /tmp/digests
           digest="${{ steps.build.outputs.digest }}"
           touch "/tmp/digests/${digest#sha256:}"
+          digestali="${{ steps.buildali.outputs.digest }}"
+          touch "/tmp/digests/${digestali#sha256:}"
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
