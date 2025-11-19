@@ -175,6 +175,8 @@ jobs:
         working-directory: /tmp/digests/ali
         run: |
           docker buildx imagetools create \
+            --parallel 1 \
+            --raw \
             -t "${{ env.REGISTRY_IMAGE_ALI }}:${{ steps.ref.outputs.latest }}" \
             -t "${{ env.REGISTRY_IMAGE_ALI }}:${{ steps.ref.outputs.ref }}" \
             $(printf '${{ env.REGISTRY_IMAGE_ALI }}@sha256:%s ' *)
